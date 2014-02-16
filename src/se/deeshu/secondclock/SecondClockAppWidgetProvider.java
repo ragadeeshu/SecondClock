@@ -17,7 +17,7 @@ import android.util.Log;
 import android.widget.RemoteViews;
 
 public class SecondClockAppWidgetProvider extends AppWidgetProvider {
-	static DateFormat df = new SimpleDateFormat("hh:mm:ss");
+	static DateFormat df = new SimpleDateFormat("HH:mm:ss");
 	private static final String LOG_TAG = "SecondClockWidget";
 	public static String CLOCK_WIDGET_UPDATE = "se.deeshu.secondclock.SECONDCLOCK_WIDGET_UPDATE";
 
@@ -86,14 +86,14 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 
 			// Create an Intent to launch ExampleActivity
 			Intent intent = new Intent(context, WidgetActivity.class);
-			// PendingIntent pendingIntent = PendingIntent.getActivity(context,
-			// 0, intent, 0);
+//			 PendingIntent pendingIntent = PendingIntent.getActivity(context,
+//			 0, intent, 0);
 
 			// Get the layout for the App Widget and attach an on-click listener
 			// to the button
 			RemoteViews views = new RemoteViews(context.getPackageName(),
 					R.layout.clock_widget);
-			// views.setOnClickPendingIntent(R.id.button, pendingIntent);
+//			 views.setOnClickPendingIntent(R.id.button, pendingIntent);
 
 			// To update a label
 			views.setTextViewText(R.id.widget1label, df.format(new Date()));
