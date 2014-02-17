@@ -92,7 +92,7 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 			// Get the layout for the App Widget and attach an on-click listener
 			// to the button
 			RemoteViews views = new RemoteViews(context.getPackageName(),
-					R.layout.clock_widget);
+					R.layout.clock_layout);
 //			 views.setOnClickPendingIntent(R.id.button, pendingIntent);
 
 			// To update a label
@@ -109,7 +109,7 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 		String currentTime = df.format(new Date());
 
 		RemoteViews updateViews = new RemoteViews(context.getPackageName(),
-				R.layout.clock_widget);
+				R.layout.clock_layout);
 		updateViews.setTextViewText(R.id.widget1label, currentTime);
 		appWidgetManager.updateAppWidget(appWidgetId, updateViews);
 	}
