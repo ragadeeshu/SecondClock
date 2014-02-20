@@ -110,6 +110,7 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 
 		RemoteViews updateViews = new RemoteViews(context.getPackageName(),
 				R.layout.clock_layout);
+		
 		updateViews.setTextViewText(R.id.widget1label, currentTime);
 		appWidgetManager.updateAppWidget(appWidgetId, updateViews);
 	}
