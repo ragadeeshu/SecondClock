@@ -61,8 +61,9 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 	public void onReceive(Context context, Intent intent) {
 		super.onReceive(context, intent);
 		Log.d(LOG_TAG, "Received intent " + intent);
-		
+
 		if (intent.getAction().equals(YOUR_AWESOME_ACTION)) {
+			System.out.println();
 			PackageManager packageManager = context.getPackageManager();
 			Intent alarmClockIntent = new Intent(Intent.ACTION_MAIN)
 					.addCategory(Intent.CATEGORY_LAUNCHER);
@@ -93,11 +94,11 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 					ActivityInfo aInfo = packageManager.getActivityInfo(cn,
 							PackageManager.GET_META_DATA);
 					alarmClockIntent.setComponent(cn);
-					// debug("Found " + vendor + " --> " + packageName + "/" +
-					// className);
+					Log.d(LOG_TAG, "Found " + vendor + " --> " + packageName
+							+ "/" + className);
 					foundClockImpl = true;
 				} catch (NameNotFoundException e) {
-					// debug(vendor + " does not exists");
+					Log.d(LOG_TAG,vendor + " does not exists");
 				}
 			}
 
@@ -110,11 +111,14 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 						R.layout.clock_layout);
 				views.setOnClickPendingIntent(R.id.widget1label, pendingIntent);
 
-	            AppWidgetManager.getInstance(context).updateAppWidget(intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS), views);
+				AppWidgetManager
+						.getInstance(context)
+						.updateAppWidget(
+								intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS),
+								views);
 			}
 		}
-		
-		
+
 		if (CLOCK_WIDGET_UPDATE.equals(intent.getAction())) {
 			Log.d(LOG_TAG, "Clock update");
 			// Get the widget manager and ids for this widget provider, then
