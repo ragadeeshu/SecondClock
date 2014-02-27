@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.apache.http.protocol.HTTP;
+
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -16,6 +18,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.provider.AlarmClock;
 import android.util.Log;
 import android.widget.RemoteViews;
 
@@ -23,7 +26,7 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 	static DateFormat df = new SimpleDateFormat("HH:mm:ss");
 	private static final String LOG_TAG = "SecondClockWidget";
 	public static String CLOCK_WIDGET_UPDATE = "se.deeshu.secondclock.SECONDCLOCK_WIDGET_UPDATE";
-	public static String YOUR_AWESOME_ACTION = "YourAwesomeAction";
+	public static String CLICKED_CLOCK_ACTION = "Clicked";
 
 	private PendingIntent createClockTickIntent(Context context) {
 		Intent intent = new Intent(CLOCK_WIDGET_UPDATE);
@@ -62,77 +65,37 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 		super.onReceive(context, intent);
 		Log.d(LOG_TAG, "Received intent " + intent);
 
-		if (intent.getAction().equals(YOUR_AWESOME_ACTION)) {
-			System.out.println();
-			PackageManager packageManager = context.getPackageManager();
-			Intent alarmClockIntent = new Intent(Intent.ACTION_MAIN)
-					.addCategory(Intent.CATEGORY_LAUNCHER);
-
-			// Verify clock implementation
-			String clockImpls[][] = {
-					{ "HTC Alarm Clock", "com.htc.android.worldclock",
-							"com.htc.android.worldclock.WorldClockTabControl" },
-					{ "Standar Alarm Clock", "com.android.deskclock",
-							"com.android.deskclock.AlarmClock" },
-					{ "Froyo Nexus Alarm Clock",
-							"com.google.android.deskclock",
-							"com.android.deskclock.DeskClock" },
-					{ "Moto Blur Alarm Clock", "com.motorola.blur.alarmclock",
-							"com.motorola.blur.alarmclock.AlarmClock" },
-					{ "Samsung Galaxy Clock",
-							"com.sec.android.app.clockpackage",
-							"com.sec.android.app.clockpackage.ClockPackage" } };
-
-			boolean foundClockImpl = false;
-
-			for (int i = 0; i < clockImpls.length; i++) {
-				String vendor = clockImpls[i][0];
-				String packageName = clockImpls[i][1];
-				String className = clockImpls[i][2];
-				try {
-					ComponentName cn = new ComponentName(packageName, className);
-					ActivityInfo aInfo = packageManager.getActivityInfo(cn,
-							PackageManager.GET_META_DATA);
-					alarmClockIntent.setComponent(cn);
-					Log.d(LOG_TAG, "Found " + vendor + " --> " + packageName
-							+ "/" + className);
-					foundClockImpl = true;
-				} catch (NameNotFoundException e) {
-					Log.d(LOG_TAG,vendor + " does not exists");
-				}
-			}
-
-			if (foundClockImpl) {
-				PendingIntent pendingIntent = PendingIntent.getActivity(
-						context, 0, alarmClockIntent, 0);
-				// add pending intent to your component
-				// ....
-				RemoteViews views = new RemoteViews(context.getPackageName(),
-						R.layout.clock_layout);
-				views.setOnClickPendingIntent(R.id.widget1label, pendingIntent);
-
-				AppWidgetManager
-						.getInstance(context)
-						.updateAppWidget(
-								intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS),
-								views);
-			}
+		if (intent.getAction().equals(CLICKED_CLOCK_ACTION)) {
+			openClock(context, intent);
 		}
 
 		if (CLOCK_WIDGET_UPDATE.equals(intent.getAction())) {
-			Log.d(LOG_TAG, "Clock update");
-			// Get the widget manager and ids for this widget provider, then
-			// call the shared
-			// clock update method.
-			ComponentName thisAppWidget = new ComponentName(
-					context.getPackageName(), getClass().getName());
-			AppWidgetManager appWidgetManager = AppWidgetManager
-					.getInstance(context);
-			int ids[] = appWidgetManager.getAppWidgetIds(thisAppWidget);
-			for (int appWidgetID : ids) {
-				updateAppWidget(context, appWidgetManager, appWidgetID);
-			}
+			updateClock(context);
 		}
+	}
+
+	private void updateClock(Context context) {
+		Log.d(LOG_TAG, "Clock update");
+		// Get the widget manager and ids for this widget provider, then
+		// call the shared
+		// clock update method.
+		ComponentName thisAppWidget = new ComponentName(
+				context.getPackageName(), getClass().getName());
+		AppWidgetManager appWidgetManager = AppWidgetManager
+				.getInstance(context);
+		int ids[] = appWidgetManager.getAppWidgetIds(thisAppWidget);
+		for (int appWidgetID : ids) {
+			updateAppWidget(context, appWidgetManager, appWidgetID);
+		}
+	}
+
+	private void openClock(Context context, Intent intent) {
+
+		Intent openClockIntent = new Intent(AlarmClock.ACTION_SET_ALARM);
+		openClockIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+		context.startActivity(openClockIntent);
+		
 	}
 
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager,
@@ -154,7 +117,7 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 			// // 0, intent, 0);
 			Intent intent = new Intent(context,
 					SecondClockAppWidgetProvider.class);
-			intent.setAction(YOUR_AWESOME_ACTION);
+			intent.setAction(CLICKED_CLOCK_ACTION);
 			PendingIntent pendingIntent = PendingIntent.getBroadcast(context,
 					0, intent, 0);
 
