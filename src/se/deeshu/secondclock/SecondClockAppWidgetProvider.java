@@ -76,17 +76,15 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 
 	private void updateClock(Context context) {
 		Log.d(LOG_TAG, "Clock update");
-		// Get the widget manager and ids for this widget provider, then
-		// call the shared
-		// clock update method.
+
 		ComponentName thisAppWidget = new ComponentName(
 				context.getPackageName(), getClass().getName());
 		AppWidgetManager appWidgetManager = AppWidgetManager
 				.getInstance(context);
 		int ids[] = appWidgetManager.getAppWidgetIds(thisAppWidget);
-		for (int appWidgetID : ids) {
-			updateAppWidget(context, appWidgetManager, appWidgetID);
-		}
+
+		onUpdate(context, appWidgetManager, ids);
+
 	}
 
 	private void openClock(Context context, Intent intent) {
@@ -95,55 +93,46 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 		openClockIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
 		context.startActivity(openClockIntent);
-		
+
 	}
 
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager,
 			int[] appWidgetIds) {
 		final int N = appWidgetIds.length;
 
-		Log.i("ExampleWidget",
+		Log.i("SecondClockWidget",
 				"Updating widgets " + Arrays.asList(appWidgetIds));
 
-		// Perform this loop procedure for each App Widget that belongs to this
-		// provider
 		for (int i = 0; i < N; i++) {
 			int appWidgetId = appWidgetIds[i];
 
-			// Create an Intent to launch ExampleActivity
-			// Intent intent = new Intent(context, WidgetActivity.class);
-			// // PendingIntent pendingIntent =
-			// PendingIntent.getActivity(context,
-			// // 0, intent, 0);
+
 			Intent intent = new Intent(context,
 					SecondClockAppWidgetProvider.class);
 			intent.setAction(CLICKED_CLOCK_ACTION);
 			PendingIntent pendingIntent = PendingIntent.getBroadcast(context,
 					0, intent, 0);
 
-			// Get the layout for the App Widget and attach an on-click listener
-			// to the button
+
 			RemoteViews views = new RemoteViews(context.getPackageName(),
 					R.layout.clock_layout);
 			views.setOnClickPendingIntent(R.id.widget1label, pendingIntent);
 
-			// To update a label
+
 			views.setTextViewText(R.id.widget1label, df.format(new Date()));
 
-			// Tell the AppWidgetManager to perform an update on the current app
-			// widget
 			appWidgetManager.updateAppWidget(appWidgetId, views);
 		}
 	}
 
-	public static void updateAppWidget(Context context,
-			AppWidgetManager appWidgetManager, int appWidgetId) {
-		String currentTime = df.format(new Date());
-
-		RemoteViews updateViews = new RemoteViews(context.getPackageName(),
-				R.layout.clock_layout);
-
-		updateViews.setTextViewText(R.id.widget1label, currentTime);
-		appWidgetManager.updateAppWidget(appWidgetId, updateViews);
-	}
+//	public static void updateAppWidget(Context context,
+//			AppWidgetManager appWidgetManager, int appWidgetId) {
+//		String currentTime = df.format(new Date());
+//
+//		RemoteViews updateViews = new RemoteViews(context.getPackageName(),
+//				R.layout.clock_layout);
+//
+//		updateViews.setTextViewText(R.id.widget1label, currentTime);
+//		appWidgetManager.updateAppWidget(appWidgetId, updateViews);
+//	}
 }

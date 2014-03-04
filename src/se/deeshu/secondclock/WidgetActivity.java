@@ -20,7 +20,4 @@ public class WidgetActivity extends Activity {
 	}
 
 	
-//	public static String CLOCK_WIDGET_UPDATE = "se.deeshu.secondclock.SECONDCLOCK_WIDGET_UPDATE";
-
-	
 }
