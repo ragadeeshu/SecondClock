@@ -28,9 +28,11 @@ public final class R {
         public static final int ic_launcher=0x7f020004;
     }
     public static final class id {
-        public static final int Corners=0x7f090001;
-        public static final int action_settings=0x7f090002;
-        public static final int widget1label=0x7f090000;
+        public static final int Corners=0x7f090003;
+        public static final int action_settings=0x7f090004;
+        public static final int textView1=0x7f090000;
+        public static final int toggleButton1=0x7f090001;
+        public static final int widget1label=0x7f090002;
     }
     public static final class layout {
         public static final int activity_control=0x7f030000;
