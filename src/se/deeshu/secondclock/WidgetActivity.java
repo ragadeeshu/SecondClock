@@ -1,15 +1,9 @@
 package se.deeshu.secondclock;
 
 import android.app.Activity;
-import android.appwidget.AppWidgetManager;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 
 public class WidgetActivity extends Activity {
-
 
 	/** Called when the activity is first created. */
 	@Override
@@ -19,5 +13,4 @@ public class WidgetActivity extends Activity {
 		setContentView(R.layout.clock_layout);
 	}
 
-	
 }

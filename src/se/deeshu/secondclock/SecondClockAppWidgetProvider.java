@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.apache.http.protocol.HTTP;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -15,9 +14,6 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.provider.AlarmClock;
 import android.util.Log;
 import android.widget.RemoteViews;
