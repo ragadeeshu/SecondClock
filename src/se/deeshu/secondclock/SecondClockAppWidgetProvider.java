@@ -18,7 +18,7 @@ import android.provider.AlarmClock;
 import android.util.Log;
 import android.widget.RemoteViews;
 
-public class SecondClockAppWidgetProvider extends AppWidgetProvider {
+public class SecondClockAppWidgetProvider extends AppWidgetProvider  {
 	static DateFormat df = new SimpleDateFormat("HH:mm:ss");
 	private static final String LOG_TAG = "SecondClockWidget";
 	public static String CLOCK_WIDGET_UPDATE = "se.deeshu.secondclock.SECONDCLOCK_WIDGET_UPDATE";
@@ -120,6 +120,8 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 			appWidgetManager.updateAppWidget(appWidgetId, views);
 		}
 	}
+	
+
 
 //	public static void updateAppWidget(Context context,
 //			AppWidgetManager appWidgetManager, int appWidgetId) {

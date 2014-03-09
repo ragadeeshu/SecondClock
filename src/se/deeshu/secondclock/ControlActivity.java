@@ -2,6 +2,7 @@ package se.deeshu.secondclock;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 
 public class ControlActivity extends Activity {
@@ -9,6 +10,7 @@ public class ControlActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		PreferenceManager.setDefaultValues(this, R.xml.clock_preferences, false);
 
 		getFragmentManager().beginTransaction()
 				.replace(android.R.id.content, new ClockPreferenceActivity())

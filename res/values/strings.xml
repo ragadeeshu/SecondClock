@@ -3,8 +3,8 @@
 
     <string name="app_name">SecondClock</string>
     <string name="action_about">About</string>
-    <string name="pref_sync">Show seconds</string>
-    <string name="pref_sync_summ">Enable to show seconds</string>
+    <string name="pref_sec">Hide seconds</string>
+    <string name="pref_sec_summ">Enable to hide seconds</string>
     <string name="pref_syncConnectionType">TODO</string>
     <string name="pref_syncConnectionTypes_default">TODO</string>
 
