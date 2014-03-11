@@ -18,7 +18,7 @@ import android.util.Log;
 import android.widget.RemoteViews;
 
 public class SecondClockAppWidgetProvider extends AppWidgetProvider {
-	static DateFormat df = new SimpleDateFormat("HH:mm:ss");
+	private DateFormat df;
 	private static final String LOG_TAG = "SecondClockWidget";
 	public static String CLOCK_WIDGET_UPDATE = "se.deeshu.secondclock.SECONDCLOCK_WIDGET_UPDATE";
 	public static String CLICKED_CLOCK_ACTION = "Clicked";
@@ -35,6 +35,9 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 		super.onEnabled(context);
 		Log.d(LOG_TAG,
 				"Widget Provider enabled.  Starting timer to update widget every second");
+		AppWidgetManager appWidgetManager = AppWidgetManager
+				.getInstance(context);
+
 		AlarmManager alarmManager = (AlarmManager) context
 				.getSystemService(Context.ALARM_SERVICE);
 
@@ -111,6 +114,11 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 					R.layout.clock_layout);
 			views.setOnClickPendingIntent(R.id.widget1label, pendingIntent);
 
+
+
+				changeDateformat(appWidgetManager, appWidgetId);
+		
+
 			views.setTextViewText(R.id.widget1label, df.format(new Date()));
 
 			appWidgetManager.updateAppWidget(appWidgetId, views);
@@ -124,7 +132,6 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 		AppWidgetManager manager = AppWidgetManager.getInstance(context);
 		ComponentName thisAppWidget = new ComponentName(context,
 				SecondClockAppWidgetProvider.class);
-		// int ids[] = manager.getAppWidgetIds(thisAppWidget);
 		manager.updateAppWidget(thisAppWidget, remoteViews);
 	}
 
@@ -134,6 +141,13 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 
 		Log.d(LOG_TAG, "Changed dimensions");
 
+		changeDateformat(appWidgetManager, appWidgetId);
+		super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId,
+				newOptions);
+	}
+
+	private void changeDateformat(AppWidgetManager appWidgetManager,
+			int appWidgetId) {
 		Bundle options = appWidgetManager.getAppWidgetOptions(appWidgetId);
 		int minWidth = options
 				.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH);
@@ -144,8 +158,6 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 		} else {
 			df = new SimpleDateFormat("HH:mm:ss");
 		}
-		super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId,
-				newOptions);
 	}
 
 	private static int getCellsForSize(int size) {
