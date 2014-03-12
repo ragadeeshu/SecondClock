@@ -81,7 +81,22 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 				.getInstance(context);
 		int ids[] = appWidgetManager.getAppWidgetIds(thisAppWidget);
 
-		onUpdate(context, appWidgetManager, ids);
+		final int N = ids.length;
+
+		// Log.i("SecondClockWidget",
+		// "Updating widgets " + Arrays.asList(appWidgetIds));
+
+		for (int i = 0; i < N; i++) {
+			int appWidgetId = ids[i];
+
+			RemoteViews views = new RemoteViews(context.getPackageName(),
+					R.layout.clock_layout);
+
+			changeDateformat(appWidgetManager, appWidgetId);
+			views.setTextViewText(R.id.widget1label, df.format(new Date()));
+
+			appWidgetManager.updateAppWidget(appWidgetId, views);
+		}
 
 	}
 
@@ -114,14 +129,8 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 					R.layout.clock_layout);
 			views.setOnClickPendingIntent(R.id.widget1label, pendingIntent);
 
+			changeDateformat(appWidgetManager, appWidgetId);
 
-
-				changeDateformat(appWidgetManager, appWidgetId);
-		
-
-			views.setTextViewText(R.id.widget1label, df.format(new Date()));
-
-			appWidgetManager.updateAppWidget(appWidgetId, views);
 		}
 	}
 
