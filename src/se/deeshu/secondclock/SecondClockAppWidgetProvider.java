@@ -91,6 +91,16 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 
 			RemoteViews views = new RemoteViews(context.getPackageName(),
 					R.layout.clock_layout);
+			
+			
+			Intent intent = new Intent(context,
+					SecondClockAppWidgetProvider.class);
+			intent.setAction(CLICKED_CLOCK_ACTION);
+			PendingIntent pendingIntent = PendingIntent.getBroadcast(context,
+					0, intent, 0);
+
+			
+			views.setOnClickPendingIntent(R.id.widget1label, pendingIntent);
 
 			changeDateformat(appWidgetManager, appWidgetId);
 			views.setTextViewText(R.id.widget1label, df.format(new Date()));
