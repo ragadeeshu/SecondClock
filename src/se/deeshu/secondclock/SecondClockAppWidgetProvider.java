@@ -18,7 +18,8 @@ import android.util.Log;
 import android.widget.RemoteViews;
 
 public class SecondClockAppWidgetProvider extends AppWidgetProvider {
-	private DateFormat df;
+	private static DateFormat shortdf = new SimpleDateFormat("HH:mm");
+	private static DateFormat longdf = new SimpleDateFormat("HH:mm:ss");;
 	private static final String LOG_TAG = "SecondClockWidget";
 	public static String CLOCK_WIDGET_UPDATE = "se.deeshu.secondclock.SECONDCLOCK_WIDGET_UPDATE";
 	public static String CLICKED_CLOCK_ACTION = "Clicked";
@@ -35,8 +36,8 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 		super.onEnabled(context);
 		Log.d(LOG_TAG,
 				"Widget Provider enabled.  Starting timer to update widget every second");
-		AppWidgetManager appWidgetManager = AppWidgetManager
-				.getInstance(context);
+		// AppWidgetManager appWidgetManager = AppWidgetManager
+		// .getInstance(context);
 
 		AlarmManager alarmManager = (AlarmManager) context
 				.getSystemService(Context.ALARM_SERVICE);
@@ -91,19 +92,21 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 
 			RemoteViews views = new RemoteViews(context.getPackageName(),
 					R.layout.clock_layout);
-			
-			
+
 			Intent intent = new Intent(context,
 					SecondClockAppWidgetProvider.class);
 			intent.setAction(CLICKED_CLOCK_ACTION);
 			PendingIntent pendingIntent = PendingIntent.getBroadcast(context,
 					0, intent, 0);
 
-			
 			views.setOnClickPendingIntent(R.id.widget1label, pendingIntent);
 
-			changeDateformat(appWidgetManager, appWidgetId);
-			views.setTextViewText(R.id.widget1label, df.format(new Date()));
+			if (getDateformat(appWidgetManager, appWidgetId))
+				views.setTextViewText(R.id.widget1label,
+						shortdf.format(new Date()));
+			else
+				views.setTextViewText(R.id.widget1label,
+						longdf.format(new Date()));
 
 			appWidgetManager.updateAppWidget(appWidgetId, views);
 		}
@@ -127,7 +130,7 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 		// "Updating widgets " + Arrays.asList(appWidgetIds));
 
 		for (int i = 0; i < N; i++) {
-			int appWidgetId = appWidgetIds[i];
+			// int appWidgetId = appWidgetIds[i];
 
 			Intent intent = new Intent(context,
 					SecondClockAppWidgetProvider.class);
@@ -139,7 +142,7 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 					R.layout.clock_layout);
 			views.setOnClickPendingIntent(R.id.widget1label, pendingIntent);
 
-			changeDateformat(appWidgetManager, appWidgetId);
+			// changeDateformat(appWidgetManager, appWidgetId);
 
 		}
 	}
@@ -160,23 +163,20 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 
 		Log.d(LOG_TAG, "Changed dimensions");
 
-		changeDateformat(appWidgetManager, appWidgetId);
+		// changeDateformat(appWidgetManager, appWidgetId);
 		super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId,
 				newOptions);
 	}
 
-	private void changeDateformat(AppWidgetManager appWidgetManager,
+	private boolean getDateformat(AppWidgetManager appWidgetManager,
 			int appWidgetId) {
 		Bundle options = appWidgetManager.getAppWidgetOptions(appWidgetId);
 		int minWidth = options
 				.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH);
 
 		int columns = getCellsForSize(minWidth);
-		if (columns == 2) {
-			df = new SimpleDateFormat("HH:mm");
-		} else {
-			df = new SimpleDateFormat("HH:mm:ss");
-		}
+		return (columns == 2);
+
 	}
 
 	private static int getCellsForSize(int size) {
