@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Timer;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -23,6 +24,7 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 	private static final String LOG_TAG = "SecondClockWidget";
 	public static String CLOCK_WIDGET_UPDATE = "se.deeshu.secondclock.SECONDCLOCK_WIDGET_UPDATE";
 	public static String CLICKED_CLOCK_ACTION = "Clicked";
+	static Timer timer = null;
 
 	private PendingIntent createClockTickIntent(Context context) {
 		Intent intent = new Intent(CLOCK_WIDGET_UPDATE);
@@ -45,6 +47,7 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTimeInMillis(System.currentTimeMillis());
 		calendar.add(Calendar.SECOND, 1);
+
 		alarmManager.setRepeating(AlarmManager.RTC, calendar.getTimeInMillis(),
 				1000, createClockTickIntent(context));
 
@@ -125,6 +128,9 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager,
 			int[] appWidgetIds) {
 		final int N = appWidgetIds.length;
+		if(timer==null){
+			
+		}
 
 		// Log.i("SecondClockWidget",
 		// "Updating widgets " + Arrays.asList(appWidgetIds));
@@ -145,6 +151,10 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 			// changeDateformat(appWidgetManager, appWidgetId);
 
 		}
+	}
+
+	public void onDeleted(Context context, int[] appWidgetIds) {
+		timer.cancel();
 	}
 
 	public static void changeTextSize(Context context, int size) {
