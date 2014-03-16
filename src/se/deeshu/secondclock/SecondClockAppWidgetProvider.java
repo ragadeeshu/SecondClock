@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Timer;
+import java.util.TimerTask;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -17,6 +18,7 @@ import android.os.Bundle;
 import android.provider.AlarmClock;
 import android.util.Log;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 
 public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 	private static DateFormat shortdf = new SimpleDateFormat("HH:mm");
@@ -26,40 +28,26 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 	public static String CLICKED_CLOCK_ACTION = "Clicked";
 	static Timer timer = null;
 
-	private PendingIntent createClockTickIntent(Context context) {
-		Intent intent = new Intent(CLOCK_WIDGET_UPDATE);
-		PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0,
-				intent, PendingIntent.FLAG_UPDATE_CURRENT);
-		return pendingIntent;
-	}
+//	private PendingIntent createClockTickIntent(Context context) {
+//		Intent intent = new Intent(CLOCK_WIDGET_UPDATE);
+//		PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0,
+//				intent, PendingIntent.FLAG_UPDATE_CURRENT);
+//		return pendingIntent;
+//	}
 
-	@Override
-	public void onEnabled(Context context) {
-		super.onEnabled(context);
-		Log.d(LOG_TAG,
-				"Widget Provider enabled.  Starting timer to update widget every second");
-		// AppWidgetManager appWidgetManager = AppWidgetManager
-		// .getInstance(context);
-
-		AlarmManager alarmManager = (AlarmManager) context
-				.getSystemService(Context.ALARM_SERVICE);
-
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTimeInMillis(System.currentTimeMillis());
-		calendar.add(Calendar.SECOND, 1);
-
-		alarmManager.setRepeating(AlarmManager.RTC, calendar.getTimeInMillis(),
-				1000, createClockTickIntent(context));
-
-	}
+//	@Override
+//	public void onEnabled(Context context) {
+//		super.onEnabled(context);
+//		Log.d(LOG_TAG,
+//				"Widget Provider enabled.  Starting timer to update widget every second");
+//
+//	}
 
 	@Override
 	public void onDisabled(Context context) {
 		super.onDisabled(context);
 		Log.d(LOG_TAG, "Widget Provider disabled. Turning off timer");
-		AlarmManager alarmManager = (AlarmManager) context
-				.getSystemService(Context.ALARM_SERVICE);
-		alarmManager.cancel(createClockTickIntent(context));
+		timer.cancel();
 	}
 
 	@Override
@@ -69,10 +57,6 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 
 		if (intent.getAction().equals(CLICKED_CLOCK_ACTION)) {
 			openClock(context, intent);
-		}
-
-		if (CLOCK_WIDGET_UPDATE.equals(intent.getAction())) {
-			updateClock(context);
 		}
 	}
 
@@ -128,15 +112,20 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager,
 			int[] appWidgetIds) {
 		final int N = appWidgetIds.length;
-		if(timer==null){
-			
+		if (timer == null) {
+			timer = new Timer();
+			Calendar cal = Calendar.getInstance();
+			cal.add(Calendar.SECOND, 1);
+			cal.set(Calendar.MILLISECOND, 0);
+			timer.scheduleAtFixedRate(new ClockTimerTask(context, this),
+					cal.getTime(), 1000);
+
 		}
 
 		// Log.i("SecondClockWidget",
 		// "Updating widgets " + Arrays.asList(appWidgetIds));
 
 		for (int i = 0; i < N; i++) {
-			// int appWidgetId = appWidgetIds[i];
 
 			Intent intent = new Intent(context,
 					SecondClockAppWidgetProvider.class);
@@ -148,13 +137,13 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 					R.layout.clock_layout);
 			views.setOnClickPendingIntent(R.id.widget1label, pendingIntent);
 
-			// changeDateformat(appWidgetManager, appWidgetId);
-
+	
 		}
 	}
 
 	public void onDeleted(Context context, int[] appWidgetIds) {
 		timer.cancel();
+		super.onDeleted(context, appWidgetIds);
 	}
 
 	public static void changeTextSize(Context context, int size) {
@@ -173,7 +162,7 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 
 		Log.d(LOG_TAG, "Changed dimensions");
 
-		// changeDateformat(appWidgetManager, appWidgetId);
+		updateClock(context);
 		super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId,
 				newOptions);
 	}
@@ -195,6 +184,25 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 			++n;
 		}
 		return n - 1;
+	}
+
+	private class ClockTimerTask extends TimerTask {
+		AppWidgetManager appWidgetManager;
+		SecondClockAppWidgetProvider parent;
+		Context context;
+
+		public ClockTimerTask(Context context,
+				SecondClockAppWidgetProvider parent) {
+			this.parent = parent;
+			this.context = context;
+		}
+
+		@Override
+		public void run() {
+
+			parent.updateClock(context);
+
+		}
 	}
 
 	// public static void updateAppWidget(Context context,
