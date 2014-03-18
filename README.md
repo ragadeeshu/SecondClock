@@ -1,6 +1,6 @@
 SecondClock
 ===========
 
-Just an somewhat resizable android clock, with seconds and, for now. Oh, it also opens alarams when you touch it. 
+Just an somewhat resizable android clock, with seconds, for now. Oh, it also opens alarams when you touch it. 
 
-Some customisation options planned for the future.
+You can also change the textsize.
