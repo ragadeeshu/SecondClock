@@ -28,20 +28,25 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 	public static String CLICKED_CLOCK_ACTION = "Clicked";
 	static Timer timer = null;
 
-//	private PendingIntent createClockTickIntent(Context context) {
-//		Intent intent = new Intent(CLOCK_WIDGET_UPDATE);
-//		PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0,
-//				intent, PendingIntent.FLAG_UPDATE_CURRENT);
-//		return pendingIntent;
-//	}
+	// private PendingIntent createClockTickIntent(Context context) {
+	// Intent intent = new Intent(CLOCK_WIDGET_UPDATE);
+	// PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0,
+	// intent, PendingIntent.FLAG_UPDATE_CURRENT);
+	// return pendingIntent;
+	// }
 
-//	@Override
-//	public void onEnabled(Context context) {
-//		super.onEnabled(context);
-//		Log.d(LOG_TAG,
-//				"Widget Provider enabled.  Starting timer to update widget every second");
-//
-//	}
+	@Override
+	public void onEnabled(Context context) {
+		super.onEnabled(context);
+		Log.d(LOG_TAG,
+				"Widget Provider enabled.  Starting timer to update widget every second");
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.SECOND, 1);
+		cal.set(Calendar.MILLISECOND, 0);
+		timer.scheduleAtFixedRate(new ClockTimerTask(context, this),
+				cal.getTime(), 1000);
+
+	}
 
 	@Override
 	public void onDisabled(Context context) {
@@ -137,7 +142,6 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 					R.layout.clock_layout);
 			views.setOnClickPendingIntent(R.id.widget1label, pendingIntent);
 
-	
 		}
 	}
 
