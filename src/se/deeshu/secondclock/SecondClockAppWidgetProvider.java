@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -18,7 +17,6 @@ import android.os.Bundle;
 import android.provider.AlarmClock;
 import android.util.Log;
 import android.widget.RemoteViews;
-import android.widget.Toast;
 
 public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 	private static DateFormat shortdf = new SimpleDateFormat("HH:mm");
@@ -26,7 +24,7 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 	private static final String LOG_TAG = "SecondClockWidget";
 	public static String CLOCK_WIDGET_UPDATE = "se.deeshu.secondclock.SECONDCLOCK_WIDGET_UPDATE";
 	public static String CLICKED_CLOCK_ACTION = "Clicked";
-	static Timer timer = null;
+	private static Timer timer = null;
 
 	// private PendingIntent createClockTickIntent(Context context) {
 	// Intent intent = new Intent(CLOCK_WIDGET_UPDATE);
@@ -40,11 +38,14 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 		super.onEnabled(context);
 		Log.d(LOG_TAG,
 				"Widget Provider enabled.  Starting timer to update widget every second");
-		Calendar cal = Calendar.getInstance();
-		cal.add(Calendar.SECOND, 1);
-		cal.set(Calendar.MILLISECOND, 0);
-		timer.scheduleAtFixedRate(new ClockTimerTask(context, this),
-				cal.getTime(), 1000);
+		if (timer == null) {
+			timer = new Timer();
+			Calendar cal = Calendar.getInstance();
+			cal.add(Calendar.SECOND, 1);
+			cal.set(Calendar.MILLISECOND, 0);
+			timer.scheduleAtFixedRate(new ClockTimerTask(context, this),
+					cal.getTime(), 1000);
+		}
 
 	}
 
@@ -146,7 +147,8 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 	}
 
 	public void onDeleted(Context context, int[] appWidgetIds) {
-		timer.cancel();
+		if (appWidgetIds.length == 0)
+			timer.cancel();
 		super.onDeleted(context, appWidgetIds);
 	}
 
@@ -191,7 +193,7 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 	}
 
 	private class ClockTimerTask extends TimerTask {
-		AppWidgetManager appWidgetManager;
+		// AppWidgetManager appWidgetManager;
 		SecondClockAppWidgetProvider parent;
 		Context context;
 
