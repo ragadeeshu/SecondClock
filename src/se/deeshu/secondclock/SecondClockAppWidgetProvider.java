@@ -35,26 +35,28 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 
 	@Override
 	public void onEnabled(Context context) {
+		updateClock(context);
 		super.onEnabled(context);
-		Log.d(LOG_TAG,
-				"Widget Provider enabled.  Starting timer to update widget every second");
-		if (timer == null) {
-			timer = new Timer();
-			Calendar cal = Calendar.getInstance();
-			cal.add(Calendar.SECOND, 1);
-			cal.set(Calendar.MILLISECOND, 0);
-			timer.scheduleAtFixedRate(new ClockTimerTask(context, this),
-					cal.getTime(), 1000);
-		}
+		// Log.d(LOG_TAG,
+		// "Widget Provider enabled.  Starting timer to update widget every second");
+		// if (timer == null) {
+		// timer = new Timer();
+		// Calendar cal = Calendar.getInstance();
+		// cal.add(Calendar.SECOND, 1);
+		// cal.set(Calendar.MILLISECOND, 0);
+		// timer.scheduleAtFixedRate(new ClockTimerTask(context, this),
+		// cal.getTime(), 1000);
+		// }
 
 	}
 
-	@Override
-	public void onDisabled(Context context) {
-		super.onDisabled(context);
-		Log.d(LOG_TAG, "Widget Provider disabled. Turning off timer");
-		timer.cancel();
-	}
+	//
+	// @Override
+	// public void onDisabled(Context context) {
+	// super.onDisabled(context);
+	// Log.d(LOG_TAG, "Widget Provider disabled. Turning off timer");
+	// timer.cancel();
+	// }
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
