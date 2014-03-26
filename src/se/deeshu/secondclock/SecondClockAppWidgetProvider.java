@@ -19,7 +19,8 @@ import android.widget.RemoteViews;
 
 public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 	private static DateFormat shortdf = new SimpleDateFormat("HH:mm");
-	private static DateFormat longdf = new SimpleDateFormat("HH:mm:ss");;
+	private static DateFormat longdf = new SimpleDateFormat("HH:mm:ss");
+	private static int textSize = 55;
 	private static final String LOG_TAG = "SecondClockWidget";
 	public static String CLOCK_WIDGET_UPDATE = "se.deeshu.secondclock.SECONDCLOCK_WIDGET_UPDATE";
 	public static String CLICKED_CLOCK_ACTION = "Clicked";
@@ -126,6 +127,8 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager,
 			int[] appWidgetIds) {
 		final int N = appWidgetIds.length;
+		changeTextSize(context, textSize);
+
 
 		for (int i = 0; i < N; i++) {
 			Intent intent = new Intent(context,
@@ -142,6 +145,7 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 	}
 
 	public static void changeTextSize(Context context, int size) {
+		textSize = size;
 		RemoteViews remoteViews = new RemoteViews(context.getPackageName(),
 				R.layout.clock_layout);
 		remoteViews.setFloat(R.id.widget1label, "setTextSize", size);
