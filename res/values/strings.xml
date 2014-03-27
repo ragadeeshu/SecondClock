@@ -7,6 +7,9 @@
     <string name="pref_small_summ">Enable to make the text smaller</string>
     <string name="pref_really_small">Even smaller</string>
     <string name="pref_really_small_summ">Enable to shrink the text further</string>
+    <string name="pref_size">Size</string>
+    <string name="pref_size_summ">Change text size</string>
+    <string name="pref_size_default">55</string>
     
 
 </resources>
