@@ -10,7 +10,7 @@ public class ControlActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		PreferenceManager.setDefaultValues(this, R.xml.clock_preferences, false);
+		PreferenceManager.setDefaultValues(this, R.xml.clock_preferences, true);
 
 		getFragmentManager().beginTransaction()
 				.replace(android.R.id.content, new ClockPreferenceActivity())
