@@ -45,11 +45,6 @@ public final class R {
     public static final class string {
         public static final int action_about=0x7f070001;
         public static final int app_name=0x7f070000;
-        /**      <string name="pref_small">Smaller text</string> 
-     <string name="pref_small_summ">Enable to make the text smaller</string> 
-     <string name="pref_really_small">Even smaller</string> 
-     <string name="pref_really_small_summ">Enable to shrink the text further</string> 
-         */
         public static final int pref_size=0x7f070002;
         public static final int pref_size_default=0x7f070004;
         public static final int pref_size_summ=0x7f070003;

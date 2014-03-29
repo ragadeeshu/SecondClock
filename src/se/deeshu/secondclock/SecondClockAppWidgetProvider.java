@@ -20,6 +20,7 @@ import android.widget.RemoteViews;
 public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 	private static DateFormat shortdf = new SimpleDateFormat("HH:mm");
 	private static DateFormat longdf = new SimpleDateFormat("HH:mm:ss");
+	private static DateFormat date = new SimpleDateFormat("MMM-dd");
 	private static int textSize = 55;
 	private static final String LOG_TAG = "SecondClockWidget";
 	public static String CLOCK_WIDGET_UPDATE = "se.deeshu.secondclock.SECONDCLOCK_WIDGET_UPDATE";
@@ -102,13 +103,14 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 					0, intent, 0);
 
 			views.setOnClickPendingIntent(R.id.widget1label, pendingIntent);
-
-			if (getDateformat(appWidgetManager, appWidgetId))
-				views.setTextViewText(R.id.widget1label,
-						shortdf.format(new Date()));
+			String time = "";
+			if (smallTime(appWidgetManager, appWidgetId))
+				time += shortdf.format(new Date());
 			else
-				views.setTextViewText(R.id.widget1label,
-						longdf.format(new Date()));
+				time += longdf.format(new Date());
+			if (includeDate(appWidgetManager, appWidgetId))
+				time += "\n" + date.format(new Date());
+			views.setTextViewText(R.id.widget1label, time);
 
 			appWidgetManager.updateAppWidget(appWidgetId, views);
 		}
@@ -128,7 +130,6 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 			int[] appWidgetIds) {
 		final int N = appWidgetIds.length;
 		changeTextSize(context, textSize);
-
 
 		for (int i = 0; i < N; i++) {
 			Intent intent = new Intent(context,
@@ -165,14 +166,24 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 				newOptions);
 	}
 
-	private boolean getDateformat(AppWidgetManager appWidgetManager,
-			int appWidgetId) {
+	private boolean smallTime(AppWidgetManager appWidgetManager, int appWidgetId) {
 		Bundle options = appWidgetManager.getAppWidgetOptions(appWidgetId);
 		int minWidth = options
 				.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH);
 
 		int columns = getCellsForSize(minWidth);
 		return (columns == 2);
+
+	}
+
+	private boolean includeDate(AppWidgetManager appWidgetManager,
+			int appWidgetId) {
+		Bundle options = appWidgetManager.getAppWidgetOptions(appWidgetId);
+		int minHeight = options
+				.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT);
+
+		int rows = getCellsForSize(minHeight);
+		return (rows == 2);
 
 	}
 
