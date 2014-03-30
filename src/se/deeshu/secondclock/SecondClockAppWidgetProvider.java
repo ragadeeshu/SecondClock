@@ -15,6 +15,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.provider.AlarmClock;
 import android.util.Log;
+import android.view.View;
 import android.widget.RemoteViews;
 
 public class SecondClockAppWidgetProvider extends AppWidgetProvider {
@@ -68,7 +69,7 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 		// Log.d(LOG_TAG, "Received intent " + intent);
 
 		if (intent.getAction().equals(CLICKED_CLOCK_ACTION)) {
-			openClock(context, intent);
+			openAlarm(context, intent);
 		}
 
 		if (CLOCK_WIDGET_UPDATE.equals(intent.getAction())) {
@@ -102,22 +103,26 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 			PendingIntent pendingIntent = PendingIntent.getBroadcast(context,
 					0, intent, 0);
 
-			views.setOnClickPendingIntent(R.id.widget1label, pendingIntent);
-			String time = "";
+			views.setOnClickPendingIntent(R.id.widgetclocktext, pendingIntent);
+			String time;
 			if (smallTime(appWidgetManager, appWidgetId))
-				time += shortdf.format(new Date());
+				time = shortdf.format(new Date());
 			else
-				time += longdf.format(new Date());
-			if (includeDate(appWidgetManager, appWidgetId))
-				time += "\n" + date.format(new Date());
-			views.setTextViewText(R.id.widget1label, time);
+				time = longdf.format(new Date());
+			if (includeDate(appWidgetManager, appWidgetId)) {
+				views.setTextViewText(R.id.widgetdatetext,
+						date.format(new Date()));
+				views.setViewVisibility(R.id.widgetdatetext, View.VISIBLE);
+			} else
+				views.setViewVisibility(R.id.widgetdatetext, View.GONE);
+			views.setTextViewText(R.id.widgetclocktext, time);
 
 			appWidgetManager.updateAppWidget(appWidgetId, views);
 		}
 
 	}
 
-	private void openClock(Context context, Intent intent) {
+	private void openAlarm(Context context, Intent intent) {
 
 		Intent openClockIntent = new Intent(AlarmClock.ACTION_SET_ALARM);
 		openClockIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -140,7 +145,7 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 
 			RemoteViews views = new RemoteViews(context.getPackageName(),
 					R.layout.clock_layout);
-			views.setOnClickPendingIntent(R.id.widget1label, pendingIntent);
+			views.setOnClickPendingIntent(R.id.widgetclocktext, pendingIntent);
 
 		}
 	}
@@ -149,7 +154,8 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 		textSize = size;
 		RemoteViews remoteViews = new RemoteViews(context.getPackageName(),
 				R.layout.clock_layout);
-		remoteViews.setFloat(R.id.widget1label, "setTextSize", size);
+		remoteViews.setFloat(R.id.widgetclocktext, "setTextSize", size);
+		remoteViews.setFloat(R.id.widgetdatetext, "setTextSize", size - 10);
 		AppWidgetManager manager = AppWidgetManager.getInstance(context);
 		ComponentName thisAppWidget = new ComponentName(context,
 				SecondClockAppWidgetProvider.class);

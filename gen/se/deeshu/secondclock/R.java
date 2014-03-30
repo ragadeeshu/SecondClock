@@ -32,9 +32,10 @@ public final class R {
         public static final int ic_launcher=0x7f020004;
     }
     public static final class id {
-        public static final int Corners=0x7f0a0001;
-        public static final int action_settings=0x7f0a0002;
-        public static final int widget1label=0x7f0a0000;
+        public static final int Corners=0x7f0a0002;
+        public static final int action_settings=0x7f0a0003;
+        public static final int widgetclocktext=0x7f0a0000;
+        public static final int widgetdatetext=0x7f0a0001;
     }
     public static final class layout {
         public static final int clock_layout=0x7f030000;
