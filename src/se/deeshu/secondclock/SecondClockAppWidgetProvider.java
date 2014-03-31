@@ -39,8 +39,6 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 		super.onEnabled(context);
 		Log.d(LOG_TAG,
 				"Widget Provider enabled.  Starting timer to update widget every second");
-		// AppWidgetManager appWidgetManager = AppWidgetManager
-		// .getInstance(context);
 
 		AlarmManager alarmManager = (AlarmManager) context
 				.getSystemService(Context.ALARM_SERVICE);
@@ -135,6 +133,7 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 			int[] appWidgetIds) {
 		final int N = appWidgetIds.length;
 		changeTextSize(context, textSize);
+		updateClock(context);
 
 		for (int i = 0; i < N; i++) {
 			Intent intent = new Intent(context,
@@ -201,14 +200,4 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 		return n - 1;
 	}
 
-	// public static void updateAppWidget(Context context,
-	// AppWidgetManager appWidgetManager, int appWidgetId) {
-	// String currentTime = df.format(new Date());
-	//
-	// RemoteViews updateViews = new RemoteViews(context.getPackageName(),
-	// R.layout.clock_layout);
-	//
-	// updateViews.setTextViewText(R.id.widget1label, currentTime);
-	// appWidgetManager.updateAppWidget(appWidgetId, updateViews);
-	// }
 }
