@@ -27,13 +27,6 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 	public static String CLOCK_WIDGET_UPDATE = "se.deeshu.secondclock.SECONDCLOCK_WIDGET_UPDATE";
 	public static String CLICKED_CLOCK_ACTION = "Clicked";
 
-	private PendingIntent createClockTickIntent(Context context) {
-		Intent intent = new Intent(CLOCK_WIDGET_UPDATE);
-		PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0,
-				intent, PendingIntent.FLAG_UPDATE_CURRENT);
-		return pendingIntent;
-	}
-
 	@Override
 	public void onEnabled(Context context) {
 		super.onEnabled(context);
@@ -61,6 +54,26 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 		alarmManager.cancel(createClockTickIntent(context));
 	}
 
+	public void onUpdate(Context context, AppWidgetManager appWidgetManager,
+			int[] appWidgetIds) {
+		final int N = appWidgetIds.length;
+		changeTextSize(context, textSize);
+		updateClock(context);
+
+		for (int i = 0; i < N; i++) {
+			Intent intent = new Intent(context,
+					SecondClockAppWidgetProvider.class);
+			intent.setAction(CLICKED_CLOCK_ACTION);
+			PendingIntent pendingIntent = PendingIntent.getBroadcast(context,
+					0, intent, 0);
+
+			RemoteViews views = new RemoteViews(context.getPackageName(),
+					R.layout.clock_layout);
+			views.setOnClickPendingIntent(R.id.widgetclocktext, pendingIntent);
+
+		}
+	}
+
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		super.onReceive(context, intent);
@@ -75,8 +88,41 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 		}
 	}
 
+	public static void changeTextSize(Context context, int size) {
+		textSize = size;
+		RemoteViews remoteViews = new RemoteViews(context.getPackageName(),
+				R.layout.clock_layout);
+		remoteViews.setFloat(R.id.widgetclocktext, "setTextSize", size);
+		remoteViews.setFloat(R.id.widgetdatetext, "setTextSize", size - 10);
+		AppWidgetManager manager = AppWidgetManager.getInstance(context);
+		ComponentName thisAppWidget = new ComponentName(context,
+				SecondClockAppWidgetProvider.class);
+		manager.updateAppWidget(thisAppWidget, remoteViews);
+	}
+
+	public static void changeBackground(Context context, boolean visible) {
+		RemoteViews remoteViews = new RemoteViews(context.getPackageName(),
+				R.layout.clock_layout);
+		remoteViews.setInt(R.id.widgetlayout, "setBackgroundResource", 0);
+		AppWidgetManager manager = AppWidgetManager.getInstance(context);
+		ComponentName thisAppWidget = new ComponentName(context,
+				SecondClockAppWidgetProvider.class);
+		manager.updateAppWidget(thisAppWidget, remoteViews);
+	}
+
+	public void onAppWidgetOptionsChanged(Context context,
+			AppWidgetManager appWidgetManager, int appWidgetId,
+			Bundle newOptions) {
+
+		Log.d(LOG_TAG, "Changed dimensions");
+		updateClock(context);
+		super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId,
+				newOptions);
+	}
+
 	private void updateClock(Context context) {
 		// Log.d(LOG_TAG, "Clock update");
+		changeBackground(context, false);
 
 		ComponentName thisAppWidget = new ComponentName(
 				context.getPackageName(), getClass().getName());
@@ -120,6 +166,13 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 
 	}
 
+	private PendingIntent createClockTickIntent(Context context) {
+		Intent intent = new Intent(CLOCK_WIDGET_UPDATE);
+		PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0,
+				intent, PendingIntent.FLAG_UPDATE_CURRENT);
+		return pendingIntent;
+	}
+
 	private void openAlarm(Context context, Intent intent) {
 
 		Intent openClockIntent = new Intent(AlarmClock.ACTION_SET_ALARM);
@@ -127,48 +180,6 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 
 		context.startActivity(openClockIntent);
 
-	}
-
-	public void onUpdate(Context context, AppWidgetManager appWidgetManager,
-			int[] appWidgetIds) {
-		final int N = appWidgetIds.length;
-		changeTextSize(context, textSize);
-		updateClock(context);
-
-		for (int i = 0; i < N; i++) {
-			Intent intent = new Intent(context,
-					SecondClockAppWidgetProvider.class);
-			intent.setAction(CLICKED_CLOCK_ACTION);
-			PendingIntent pendingIntent = PendingIntent.getBroadcast(context,
-					0, intent, 0);
-
-			RemoteViews views = new RemoteViews(context.getPackageName(),
-					R.layout.clock_layout);
-			views.setOnClickPendingIntent(R.id.widgetclocktext, pendingIntent);
-
-		}
-	}
-
-	public static void changeTextSize(Context context, int size) {
-		textSize = size;
-		RemoteViews remoteViews = new RemoteViews(context.getPackageName(),
-				R.layout.clock_layout);
-		remoteViews.setFloat(R.id.widgetclocktext, "setTextSize", size);
-		remoteViews.setFloat(R.id.widgetdatetext, "setTextSize", size - 10);
-		AppWidgetManager manager = AppWidgetManager.getInstance(context);
-		ComponentName thisAppWidget = new ComponentName(context,
-				SecondClockAppWidgetProvider.class);
-		manager.updateAppWidget(thisAppWidget, remoteViews);
-	}
-
-	public void onAppWidgetOptionsChanged(Context context,
-			AppWidgetManager appWidgetManager, int appWidgetId,
-			Bundle newOptions) {
-
-		Log.d(LOG_TAG, "Changed dimensions");
-		updateClock(context);
-		super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId,
-				newOptions);
 	}
 
 	private boolean smallTime(AppWidgetManager appWidgetManager, int appWidgetId) {

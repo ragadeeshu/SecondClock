@@ -4,6 +4,7 @@
     android:layout_height="fill_parent"
     android:orientation="vertical"
     android:gravity="center"
+    android:id="@+id/widgetlayout"
     android:background="@drawable/background" >
 
     <TextView
