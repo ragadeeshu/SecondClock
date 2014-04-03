@@ -117,6 +117,7 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 	public void onAppWidgetOptionsChanged(Context context,
 			AppWidgetManager appWidgetManager, int appWidgetId,
 			Bundle newOptions) {
+		
 
 		Log.d(LOG_TAG, "Changed dimensions");
 		updateClock(context);
@@ -126,7 +127,7 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 
 	private void updateClock(Context context) {
 		// Log.d(LOG_TAG, "Clock update");
-		changeBackground(context, false);
+
 
 		ComponentName thisAppWidget = new ComponentName(
 				context.getPackageName(), getClass().getName());
