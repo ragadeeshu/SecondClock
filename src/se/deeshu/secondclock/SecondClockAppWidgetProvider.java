@@ -100,14 +100,14 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 		manager.updateAppWidget(thisAppWidget, remoteViews);
 	}
 
-	public static void changeBackground(Context context, boolean visible) {
+	public static void changeBackground(Context context, boolean hidden) {
 		RemoteViews remoteViews = new RemoteViews(context.getPackageName(),
 				R.layout.clock_layout);
-		if (visible)
+		if (hidden)
+			remoteViews.setInt(R.id.widgetlayout, "setBackgroundResource", 0);
+		else
 			remoteViews.setInt(R.id.widgetlayout, "setBackgroundResource",
 					R.drawable.background);
-		else
-			remoteViews.setInt(R.id.widgetlayout, "setBackgroundResource", 0);
 		AppWidgetManager manager = AppWidgetManager.getInstance(context);
 		ComponentName thisAppWidget = new ComponentName(context,
 				SecondClockAppWidgetProvider.class);
