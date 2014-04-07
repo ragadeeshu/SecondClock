@@ -23,6 +23,7 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 	private static DateFormat longdf = new SimpleDateFormat("HH:mm:ss");
 	private static DateFormat date = new SimpleDateFormat("MMM-dd");
 	private static int textSize = 55;
+	private static boolean backgroundIsHidden = false;
 	private static final String LOG_TAG = "SecondClockWidget";
 	public static String CLOCK_WIDGET_UPDATE = "se.deeshu.secondclock.SECONDCLOCK_WIDGET_UPDATE";
 	public static String CLICKED_CLOCK_ACTION = "Clicked";
@@ -58,6 +59,7 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 			int[] appWidgetIds) {
 		final int N = appWidgetIds.length;
 		changeTextSize(context, textSize);
+		changeBackground(context, backgroundIsHidden);
 		updateClock(context);
 
 		for (int i = 0; i < N; i++) {
@@ -101,6 +103,7 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 	}
 
 	public static void changeBackground(Context context, boolean hidden) {
+		backgroundIsHidden = hidden;
 		RemoteViews remoteViews = new RemoteViews(context.getPackageName(),
 				R.layout.clock_layout);
 		if (hidden)
@@ -117,7 +120,6 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 	public void onAppWidgetOptionsChanged(Context context,
 			AppWidgetManager appWidgetManager, int appWidgetId,
 			Bundle newOptions) {
-		
 
 		Log.d(LOG_TAG, "Changed dimensions");
 		updateClock(context);
@@ -127,7 +129,6 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 
 	private void updateClock(Context context) {
 		// Log.d(LOG_TAG, "Clock update");
-
 
 		ComponentName thisAppWidget = new ComponentName(
 				context.getPackageName(), getClass().getName());
