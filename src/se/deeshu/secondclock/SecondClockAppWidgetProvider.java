@@ -12,7 +12,9 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.AlarmClock;
 import android.util.Log;
 import android.view.View;
@@ -58,8 +60,15 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager,
 			int[] appWidgetIds) {
 		final int N = appWidgetIds.length;
-		changeTextSize(context, textSize);
-		changeBackground(context, backgroundIsHidden);
+		SharedPreferences sharedPreferences = PreferenceManager
+				.getDefaultSharedPreferences(context);
+
+		changeTextSize(context,
+				Integer.parseInt(sharedPreferences.getString(ClockPreferenceActivity.KEY_PREF_SIZE, "55")));
+
+		changeBackground(context, sharedPreferences.getBoolean(ClockPreferenceActivity.KEY_PREF_BACKGROUND, false));
+
+
 		updateClock(context);
 
 		for (int i = 0; i < N; i++) {
