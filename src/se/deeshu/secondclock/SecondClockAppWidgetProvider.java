@@ -59,19 +59,18 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager,
 			int[] appWidgetIds) {
-		final int N = appWidgetIds.length;
 		SharedPreferences sharedPreferences = PreferenceManager
 				.getDefaultSharedPreferences(context);
 
-		changeTextSize(context,
-				Integer.parseInt(sharedPreferences.getString(ClockPreferenceActivity.KEY_PREF_SIZE, "55")));
+		changeTextSize(context, Integer.parseInt(sharedPreferences.getString(
+				ClockPreferenceActivity.KEY_PREF_SIZE, "55")));
 
-		changeBackground(context, sharedPreferences.getBoolean(ClockPreferenceActivity.KEY_PREF_BACKGROUND, false));
+		changeBackground(context, sharedPreferences.getBoolean(
+				ClockPreferenceActivity.KEY_PREF_BACKGROUND, false));
 
+		// updateClock(context);
 
-		updateClock(context);
-
-		for (int i = 0; i < N; i++) {
+		for (int i : appWidgetIds) {
 			Intent intent = new Intent(context,
 					SecondClockAppWidgetProvider.class);
 			intent.setAction(CLICKED_CLOCK_ACTION);
@@ -81,6 +80,20 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 			RemoteViews views = new RemoteViews(context.getPackageName(),
 					R.layout.clock_layout);
 			views.setOnClickPendingIntent(R.id.widgetclocktext, pendingIntent);
+			String time;
+			if (smallTime(appWidgetManager, i))
+				time = shortdf.format(new Date());
+			else
+				time = longdf.format(new Date());
+			if (includeDate(appWidgetManager, i)) {
+				views.setTextViewText(R.id.widgetdatetext,
+						date.format(new Date()));
+				views.setViewVisibility(R.id.widgetdatetext, View.VISIBLE);
+			} else
+				views.setViewVisibility(R.id.widgetdatetext, View.GONE);
+			views.setTextViewText(R.id.widgetclocktext, time);
+
+			appWidgetManager.updateAppWidget(i, views);
 
 		}
 	}
@@ -95,7 +108,12 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 		}
 
 		if (CLOCK_WIDGET_UPDATE.equals(intent.getAction())) {
-			updateClock(context);
+			AppWidgetManager appWidgetManager = AppWidgetManager
+					.getInstance(context);
+			ComponentName thisAppWidget = new ComponentName(
+					context.getPackageName(), getClass().getName());
+			int ids[] = appWidgetManager.getAppWidgetIds(thisAppWidget);
+			onUpdate(context, appWidgetManager, ids);
 		}
 	}
 
@@ -131,55 +149,57 @@ public class SecondClockAppWidgetProvider extends AppWidgetProvider {
 			Bundle newOptions) {
 
 		Log.d(LOG_TAG, "Changed dimensions");
-		updateClock(context);
+		// updateClock(context);
+		int[] id = { appWidgetId };
+		onUpdate(context, appWidgetManager, id);
 		super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId,
 				newOptions);
 	}
 
-	private void updateClock(Context context) {
-		// Log.d(LOG_TAG, "Clock update");
-
-		ComponentName thisAppWidget = new ComponentName(
-				context.getPackageName(), getClass().getName());
-		AppWidgetManager appWidgetManager = AppWidgetManager
-				.getInstance(context);
-		int ids[] = appWidgetManager.getAppWidgetIds(thisAppWidget);
-
-		final int N = ids.length;
-
-		// Log.i("SecondClockWidget",
-		// "Updating widgets " + Arrays.asList(appWidgetIds));
-
-		for (int i = 0; i < N; i++) {
-			int appWidgetId = ids[i];
-
-			RemoteViews views = new RemoteViews(context.getPackageName(),
-					R.layout.clock_layout);
-
-			Intent intent = new Intent(context,
-					SecondClockAppWidgetProvider.class);
-			intent.setAction(CLICKED_CLOCK_ACTION);
-			PendingIntent pendingIntent = PendingIntent.getBroadcast(context,
-					0, intent, 0);
-
-			views.setOnClickPendingIntent(R.id.widgetclocktext, pendingIntent);
-			String time;
-			if (smallTime(appWidgetManager, appWidgetId))
-				time = shortdf.format(new Date());
-			else
-				time = longdf.format(new Date());
-			if (includeDate(appWidgetManager, appWidgetId)) {
-				views.setTextViewText(R.id.widgetdatetext,
-						date.format(new Date()));
-				views.setViewVisibility(R.id.widgetdatetext, View.VISIBLE);
-			} else
-				views.setViewVisibility(R.id.widgetdatetext, View.GONE);
-			views.setTextViewText(R.id.widgetclocktext, time);
-
-			appWidgetManager.updateAppWidget(appWidgetId, views);
-		}
-
-	}
+	// private void updateClock(Context context) {
+	// // Log.d(LOG_TAG, "Clock update");
+	//
+	// ComponentName thisAppWidget = new ComponentName(
+	// context.getPackageName(), getClass().getName());
+	// AppWidgetManager appWidgetManager = AppWidgetManager
+	// .getInstance(context);
+	// int ids[] = appWidgetManager.getAppWidgetIds(thisAppWidget);
+	//
+	// final int N = ids.length;
+	//
+	// // Log.i("SecondClockWidget",
+	// // "Updating widgets " + Arrays.asList(appWidgetIds));
+	//
+	// for (int i = 0; i < N; i++) {
+	// int appWidgetId = ids[i];
+	//
+	// RemoteViews views = new RemoteViews(context.getPackageName(),
+	// R.layout.clock_layout);
+	//
+	// Intent intent = new Intent(context,
+	// SecondClockAppWidgetProvider.class);
+	// intent.setAction(CLICKED_CLOCK_ACTION);
+	// PendingIntent pendingIntent = PendingIntent.getBroadcast(context,
+	// 0, intent, 0);
+	//
+	// views.setOnClickPendingIntent(R.id.widgetclocktext, pendingIntent);
+	// String time;
+	// if (smallTime(appWidgetManager, appWidgetId))
+	// time = shortdf.format(new Date());
+	// else
+	// time = longdf.format(new Date());
+	// if (includeDate(appWidgetManager, appWidgetId)) {
+	// views.setTextViewText(R.id.widgetdatetext,
+	// date.format(new Date()));
+	// views.setViewVisibility(R.id.widgetdatetext, View.VISIBLE);
+	// } else
+	// views.setViewVisibility(R.id.widgetdatetext, View.GONE);
+	// views.setTextViewText(R.id.widgetclocktext, time);
+	//
+	// appWidgetManager.updateAppWidget(appWidgetId, views);
+	// }
+	//
+	// }
 
 	private PendingIntent createClockTickIntent(Context context) {
 		Intent intent = new Intent(CLOCK_WIDGET_UPDATE);
