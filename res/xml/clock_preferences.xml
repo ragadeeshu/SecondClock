@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <ListPreference
+        android:defaultValue="@string/pref_size_default"
+        android:dialogTitle="@string/pref_size"
+        android:entries="@array/pref_size_entries"
+        android:entryValues="@array/pref_size_values"
+        android:key="pref_size"
+        android:summary="@string/pref_size_summ"
+        android:title="@string/pref_size" />
+     <CheckBoxPreference
+        android:key="pref_background"
+        android:title="@string/pref_background"
+        android:summary="@string/pref_background_summ"
+        android:defaultValue="false" />
+
+
+</PreferenceScreen>
